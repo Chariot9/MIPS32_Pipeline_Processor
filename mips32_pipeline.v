@@ -43,8 +43,7 @@ module mips32_pipeline(
     wire [4:0]  MEM_WB_rd;
     wire        MEM_WB_reg_write;
 
-    // Choose write-back data: ALU or loaded memory
-    wire [31:0] write_back_data = (MEM_WB_type == 3'b010) ? MEM_WB_LMD : MEM_WB_ALUOut;
+
 
     // Instantiate register file
     reg_file regfile (
@@ -237,6 +236,8 @@ module mips32_pipeline(
     assign MEM_WB_reg_write = MEM_WB_reg_write_reg;
 
     // ---------------- WB stage ----------------
+        // Choose write-back data: ALU or loaded memory
+    wire [31:0] write_back_data = (MEM_WB_type == 3'b010) ? MEM_WB_LMD : MEM_WB_ALUOut;
     always @(posedge clk) begin
         if (MEM_WB_reg_write_reg) begin
             $display("[WB] Time=%0t: Writing to R[%0d] value=%0d (type=%b)", $time, MEM_WB_dest_reg, write_back_data, MEM_WB_type_reg);
